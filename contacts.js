@@ -32,9 +32,9 @@ async function removeContact(contactId) {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
 
 		const rewroteList = await JSON.parse(data).filter(({ id }) => id !== contactId);
-		const stringifiedRewroteList = JSON.stringify(rewroteList, null, 2);
+		const stringifyRewroteList = JSON.stringify(rewroteList, null, 2);
 
-		await fsPromises.writeFile(contactsPath, stringifiedRewroteList, 'utf-8');
+		await fsPromises.writeFile(contactsPath, stringifyRewroteList, 'utf-8');
 
 		console.log('The contact has been removed!');
 	} catch (error) {
@@ -46,8 +46,11 @@ async function addContact(name, email, phone) {
 	try {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
 
-		const rewroteList = await JSON.parse(data).concat({ name, email, phone });
-		const stringifiedRewroteList = JSON.stringify(rewroteList, null, 2);
+		//Вместо этого можно было установить uuid, но я решил не нарушать специфику id в данном примере :)
+		const id = (await JSON.parse(data).length) + 1;
+
+		const rewroteContactList = await JSON.parse(data).concat({ id, name, email, phone });
+		const stringifiedRewroteList = JSON.stringify(rewroteContactList, null, 2);
 
 		await fsPromises.writeFile(contactsPath, stringifiedRewroteList, 'utf-8');
 
