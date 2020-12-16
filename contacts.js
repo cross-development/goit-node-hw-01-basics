@@ -6,7 +6,7 @@ const contactsPath = path.join(__dirname, 'db/contacts.json');
 async function listContacts() {
 	try {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
-		const parsedData = await JSON.parse(data);
+		const parsedData = JSON.parse(data);
 
 		console.table(parsedData);
 	} catch (error) {
@@ -17,9 +17,9 @@ async function listContacts() {
 async function getContactById(contactId) {
 	try {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
-		const parsedData = await JSON.parse(data);
+		const parsedData = JSON.parse(data);
 
-		const contact = await parsedData.find(({ id }) => id === contactId);
+		const contact = parsedData.find(({ id }) => id === contactId);
 
 		console.table(contact);
 	} catch (error) {
@@ -31,10 +31,10 @@ async function removeContact(contactId) {
 	try {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
 
-		const rewroteList = await JSON.parse(data).filter(({ id }) => id !== contactId);
-		const stringifyRewroteList = JSON.stringify(rewroteList, null, 2);
+		const updatedData = JSON.parse(data).filter(({ id }) => id !== contactId);
+		const stringifyUpdatedData = JSON.stringify(updatedData, null, 2);
 
-		await fsPromises.writeFile(contactsPath, stringifyRewroteList, 'utf-8');
+		await fsPromises.writeFile(contactsPath, stringifyUpdatedData, 'utf-8');
 
 		console.log('The contact has been removed!');
 	} catch (error) {
@@ -46,13 +46,12 @@ async function addContact(name, email, phone) {
 	try {
 		const data = await fsPromises.readFile(contactsPath, 'utf-8');
 
-		//Вместо этого можно было установить uuid, но я решил не нарушать специфику id в данном примере :)
-		const id = (await JSON.parse(data).length) + 1;
+		const id = JSON.parse(data).length + 1;
 
-		const rewroteContactList = await JSON.parse(data).concat({ id, name, email, phone });
-		const stringifiedRewroteList = JSON.stringify(rewroteContactList, null, 2);
+		const updatedData = JSON.parse(data).concat({ id, name, email, phone });
+		const stringifyUpdatedData = JSON.stringify(updatedData, null, 2);
 
-		await fsPromises.writeFile(contactsPath, stringifiedRewroteList, 'utf-8');
+		await fsPromises.writeFile(contactsPath, stringifyUpdatedData, 'utf-8');
 
 		console.log('The contact has been added!');
 	} catch (error) {
